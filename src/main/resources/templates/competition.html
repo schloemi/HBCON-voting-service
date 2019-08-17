@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" xmlns="http://www.w3.org/1999/html">
+
+<head>
+  <title th:text="${competition.title}">competition.title</title>
+  <meta charset="utf-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css"/>
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js"></script>
+  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@2.8.0"></script>
+</head>
+<body>
+	<div class="container">
+		<nav class="navbar navbar-light bg-light">
+		  <span class="navbar-brand mb-0 h1" th:text="${competition.title}">${competition.title}</span>
+		</nav>
+ 		
+ 		<div class="row">
+		    <div class="col-sm">
+		      <canvas id="mycanvas" height="300"></canvas>
+		    </div>
+		    <div class="col-sm">
+		      
+		    </div>
+		    
+		</div>
+ 	 </div>
+ 	
+ 	<script type="text/javascript">
+ 	$(document).ready(function(){
+ 		  $.ajax({
+ 		    url: "http://localhost:8080/api/competitions/1/statistic",
+ 		    method: "GET",
+ 		    success: function(data) {
+ 		      console.log(data);
+ 		      var title = [];
+ 		      var score = [];
+
+ 		      for(var i in data.scores) {
+ 		    	if (i==11){break;}  
+ 		    	title.push(data.scores[i].title);
+ 		        score.push(data.scores[i].score);
+ 		      }
+
+ 		      var chartdata = {
+ 		        labels: title,
+ 		        datasets : [
+ 		          {
+ 		            label: 'Top Scores',
+ 		            //backgroundColor: 'rgba(200, 200, 200, 0.75)',
+ 		            //borderColor: 'rgba(200, 200, 200, 0.75)',
+ 		            //hoverBackgroundColor: 'rgba(200, 200, 200, 1)',
+ 		            //hoverBorderColor: 'rgba(200, 200, 200, 1)',
+ 		            data: score,
+ 		           color: function(context) {
+	 		    	    var index = context.dataIndex;
+	 		    	    var value = context.dataset.data[index];
+	 		    	    
+	 		    	    
+	 		    	    //return   // draw negative values in red
+	 		    	     //   index % 2 ? 'blue' :    // else, alternate values in blue and green
+	 		    	      //  'green';
+	 		    	}
+ 		          }
+ 		        ]
+	 		      
+ 		      };
+
+ 		      var ctx = $("#mycanvas");
+ 		      
+ 		      var barGraph = new Chart(ctx, {
+ 		    	type: 'bar',
+ 		        position: 'top',
+ 		        data: chartdata
+ 		      });
+ 		    },
+ 		    error: function(data) {
+ 		      console.log(data);
+ 		    }
+ 		  });
+ 		});
+	 
+  </script>
+</body>
+</html>

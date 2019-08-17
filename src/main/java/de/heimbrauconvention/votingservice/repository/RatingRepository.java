@@ -17,12 +17,13 @@ public interface RatingRepository extends CrudRepository<Rating, Long> {
 	List<Rating> findByRatingItem(RatingItem ratingItem);
 	
 	
-	@Query(value = "SELECT ri.public_id, score.amount from rating_item ri " + 
+	@Query(value = "SELECT ri.public_id, score.amount, ri.title from rating_item ri " + 
 			"	LEFT JOIN (" + 
 			"		SELECT rating_item_id, SUM(value) as amount" + 
 			"		FROM rating            " + 
 			"		GROUP BY rating_item_id) score On score.rating_item_id = ri.id" + 
-			"	WHERE competition_id = ?1 and ri.is_active = 1;"
+			"	WHERE competition_id = ?1 and ri.is_active = 1" + 
+			"   ORDER BY score.amount DESC;"
 			, nativeQuery = true)
 	List<Object[]> statistics(long competitionId);
 	

@@ -33,14 +33,6 @@ public class CompetitionRestController {
    RatingService ratingService;
    
    
-	@RequestMapping(value = "/longboard")
-	public String longboardOverview(HttpServletRequest request, HttpServletResponse response) {
-		
-		return "index";
-	}
-   
-   
-   
    @GetMapping(path = "/competitions" , produces=MediaType.APPLICATION_JSON_VALUE)
    public List<CompetitionDTO> listCompetition(
 					HttpServletRequest request,

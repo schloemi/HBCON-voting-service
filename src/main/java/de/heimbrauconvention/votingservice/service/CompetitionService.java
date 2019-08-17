@@ -72,7 +72,8 @@ public class CompetitionService extends AbstractEntityService<Competition, Compe
 				}
 				String ratingItemId = (String) objects[0];
 				Integer amount = (objects[1] == null)? 0 : ((Double) objects[1]).intValue();
-				RatingScoreDTO score = new RatingScoreDTO(ratingItemId, amount);
+				String title = (objects[2] == null)? "Kein Title" :(String) objects[2];
+				RatingScoreDTO score = new RatingScoreDTO(ratingItemId, amount, title);
 				dto.getScores().add(score);
 			}
 		}
