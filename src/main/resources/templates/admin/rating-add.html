@@ -2,7 +2,7 @@
 <html xmlns:th="http://www.thymeleaf.org" xmlns="http://www.w3.org/1999/html">
 
 <head>
-<title th:text="${'RatingItems für:' + competition.title}">competition.title</title>
+<title th:text="${'Rating Generator: ' + competition.title}">competition.title</title>
 <meta charset="utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 <link rel="stylesheet"
@@ -16,27 +16,29 @@
 <body>
 	<div class="container">
 		<nav class="navbar navbar-light bg-light">
-			<span class="navbar-brand mb-0 h1" th:text="${'RatingItems für: ' + competition.title + ' (' + #lists.size(competition.ratingItems) +')'}">${competition.title}</span>
+			<span class="navbar-brand mb-0 h1" th:text="${'Rating Generator: ' + competition.title + ' (' + #lists.size(ratings) +')'}">${competition.title}</span>
 		</nav>
 		<div class="row">
 			<div class="col-sm">
 				<table class="table">
 					<thead class="thead-dark">
 					  	<tr>
-					      <th scope="col">BarCode</th>
-					      <th scope="col">Public-ID</th>
-					      <th scope="col">Title</th>
-					      <th scope="col">Description</th>
+					      <th scope="col">Rating Code</th>
+					      <th scope="col">Rating Item</th>
+					      <th scope="col">Status</th>
+					      <th scope="col">Ratings Left</th>
 					    </tr>
 					</thead>
 					<tbody>
-					    <tr th:each="item : ${competition.ratingItems}">
+					    <tr th:each="item : ${ratings}">
 							<th scope="row">
-								<img th:src="${'http://localhost:8080/admin/competitions/' + competition.id + '/ratingItems/' + item.publicId +'/qrcode'}" width="100" height="100">
+								<img th:src="${'/web/utils/qrcode/' + item.ratingCodeDTO.publicId }" width="100" height="100">
 							</th>
-							<td th:text="${item.publicId}">${item.publicId }</td>
-							<td th:text="${item.title}">${item.title }</td>
-							<td th:text="${item.description}">${item.description }</td>
+							<th scope="row">
+								<img th:src="${'/web/utils/qrcode/' + item.ratingItemDTO.publicId }" width="100" height="100">
+							</th>
+							<td th:text="${item.responseStatus}">Status</td>
+							<td th:text="${item.ratingsLeft}">Ratings Left</td>
 						</tr>
 					  </tbody>
 				</table>

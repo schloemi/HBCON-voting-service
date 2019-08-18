@@ -8,6 +8,7 @@ import org.springframework.stereotype.Service;
 
 import de.heimbrauconvention.votingservice.domain.RatingItem;
 import de.heimbrauconvention.votingservice.dto.RatingItemDTO;
+import de.heimbrauconvention.votingservice.repository.CompetitionRepository;
 import de.heimbrauconvention.votingservice.repository.RatingItemRepository;
 
 @Transactional
@@ -16,6 +17,9 @@ public class RatingItemService extends AbstractEntityService<RatingItem, RatingI
 
 	@Autowired
 	RatingItemRepository ratingItemRepository;
+	
+	@Autowired
+	CompetitionRepository competitionRepository;
 	
 	
 	@Override

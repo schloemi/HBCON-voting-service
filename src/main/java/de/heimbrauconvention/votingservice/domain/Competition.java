@@ -10,6 +10,7 @@ import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.JoinColumn;
 import javax.persistence.OneToMany;
+import javax.persistence.OrderBy;
 import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
@@ -55,6 +56,7 @@ public class Competition extends AbstractEntity {
 
 	@OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
 	@JoinColumn(name = "competition_id")
+	@OrderBy(value = "publicId")
 	private Set<RatingItem> ratingItems;
 
 	@OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY)

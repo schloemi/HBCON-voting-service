@@ -35,7 +35,7 @@ public class RatingItem extends AbstractEntity {
 	private Competition competition;
 
 	@OneToMany(mappedBy = "ratingItem", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
-    private Set<Rating> ratings;
+	private Set<Rating> ratings;
 
 	public RatingItem() {
 		super();

@@ -1,6 +1,6 @@
 package de.heimbrauconvention.votingservice.dto;
 
-public class RatingItemDTO extends AbstractEntityDTO {
+public class RatingCodeDTO extends AbstractEntityDTO {
 
 	private String title;
 	private String description;
@@ -9,7 +9,7 @@ public class RatingItemDTO extends AbstractEntityDTO {
 	private Boolean isActive;
 	private Integer score = 0;
 
-	public RatingItemDTO() {
+	public RatingCodeDTO() {
 
 	}
 
@@ -60,5 +60,7 @@ public class RatingItemDTO extends AbstractEntityDTO {
 	public void setScore(Integer score) {
 		this.score = score;
 	}
+	
+	
 
 }
