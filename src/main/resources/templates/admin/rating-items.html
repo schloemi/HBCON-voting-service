@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+	xmlns="http://www.w3.org/1999/html">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
+<title>RatingItems List</title>
+</head>
+<body>
+
+	<h3>RatingItems List</h3>
+	<table border="1" cellpadding="2" cellspacing="2">
+		<tr>
+			<th>Id</th>
+			<th>Titel</th>
+			<th>Description</th>
+			<th>BarCode</th>
+		</tr>
+			<tr th:each="item : ${ratingItems}">
+				<td th:text="${item.publicId }">${item.publicId }</td>
+				<td th:text="${item.title }">${item.title }</td>
+				<td th:text="${item.description }">${item.description }</td>
+				<td>
+					<img th:src="${'http://localhost:8080/admin/ratingItems/' + item.publicId +'/qrcode'}" width="100" height="100">
+				</td>
+			</tr>
+	</table>
+
+</body>
+</html>

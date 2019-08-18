@@ -14,7 +14,7 @@ import de.heimbrauconvention.votingservice.service.CompetitionService;
 
 @Controller
 @RequestMapping("/web")
-public class FrontendController {
+public class WebController {
 
 	@Autowired
 	CompetitionService competitionService;
@@ -32,8 +32,6 @@ public class FrontendController {
 			return "error";
 		}
 		model.addAttribute("competition", competitionService.convertToDto(competition));
-		model.addAttribute("statistic", competitionService.getStatistic(competitionId));
-		
 		return "competition";
     }
 
