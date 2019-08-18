@@ -71,7 +71,7 @@ public class AdminController {
 			for (int i=0; i <number; i++) {
 				int ratingItemIndex = (int) (Math.random() * ratingItems.size());
 				int ratingCodeIndex = (int) (Math.random() * ratingCodes.size());
-				RatingDTO rating = (RatingDTO) ratingService.rate(competitionId, ratingCodes.get(ratingCodeIndex).getPublicId(), ratingItems.get(ratingItemIndex).getPublicId() , 1.0F);
+				RatingDTO rating = (RatingDTO) ratingService.rate(ratingCodes.get(ratingCodeIndex).getPublicId(), ratingItems.get(ratingItemIndex).getPublicId() , 1.0F);
 				rating.setRatingCodeDTO(ratingCodeService.convertToDto(ratingCodes.get(ratingCodeIndex)));
 				rating.setRatingItemDTO(ratingItemService.convertToDto(ratingItems.get(ratingItemIndex)));
 				ratings.add(rating);

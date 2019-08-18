@@ -32,7 +32,7 @@
 					<tbody>
 					    <tr th:each="item : ${competition.ratingItems}">
 							<th scope="row">
-								<img th:src="${'http://localhost:8080/admin/competitions/' + competition.id + '/ratingItems/' + item.publicId +'/qrcode'}" width="100" height="100">
+								<img th:src="${'/web/utils/qrcode/' + item.publicId }" width="100" height="100">
 							</th>
 							<td th:text="${item.publicId}">${item.publicId }</td>
 							<td th:text="${item.title}">${item.title }</td>

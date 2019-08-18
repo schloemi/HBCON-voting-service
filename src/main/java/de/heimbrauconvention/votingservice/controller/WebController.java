@@ -39,8 +39,6 @@ public class WebController {
 		return "competition";
     }
 
-	
-	
 	/*********************************************************
 	 * 
 	 * Utils ENDPOINTS

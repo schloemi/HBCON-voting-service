@@ -11,10 +11,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
 
 import de.heimbrauconvention.votingservice.domain.Competition;
-import de.heimbrauconvention.votingservice.domain.RatingCode;
-import de.heimbrauconvention.votingservice.domain.RatingItem;
 import de.heimbrauconvention.votingservice.dto.CompetitionDTO;
-import de.heimbrauconvention.votingservice.dto.RatingItemDTO;
 import de.heimbrauconvention.votingservice.dto.RatingScoreDTO;
 import de.heimbrauconvention.votingservice.dto.ResponseStatus;
 import de.heimbrauconvention.votingservice.dto.StatisticDTO;
@@ -39,10 +36,6 @@ public class CompetitionService extends AbstractEntityService<Competition, Compe
 	
 	
 	
-	public CompetitionService() {
-		// TODO Auto-generated constructor stub
-	}
-
 	@Override
 	public CompetitionDTO convertToDto(Competition competition) {
 		CompetitionDTO dto = new CompetitionDTO();
@@ -113,105 +106,11 @@ public class CompetitionService extends AbstractEntityService<Competition, Compe
 		if (!ResponseStatus.OK.equals(competitionStatus)) {
 			dto.setResponseStatus(competitionStatus);
 			return dto;
-		} else {
-			dto.setResponseStatus(ResponseStatus.OK);
-		}
-		return dto;
-	}
-
-	public ValidationDTO validateCode(Long competitionId, String codeId) {
-		ValidationDTO dto = new ValidationDTO();
-		
-		Competition competition = this.getById(competitionId);
-		
-		ResponseStatus competitionStatus = validateCompetition(competition);
-		if (!ResponseStatus.OK.equals(competitionStatus)) {
-			dto.setResponseStatus(competitionStatus);
-			return dto;
-		}
-		
-		RatingCode ratingCode = ratingCodeRepository.findByPublicId(codeId).orElse(null) ;
-		if (ratingCode == null) {
-			dto.setResponseStatus(ResponseStatus.ERROR_NOT_FOUND_RATING_CODE);
-			return dto;
-		}
-
-		if (Boolean.TRUE.equals(ratingCode.getExpired())) {
-			dto.setResponseStatus(ResponseStatus.ERROR_RATING_CODE_EXPIRED);
-			return dto;
-		}
-		
-		if (!competition.equals(ratingCode.getCompetition())) {
-			dto.setResponseStatus(ResponseStatus.ERROR_MATCH_COMPETION_RATING_CODE);
-			return dto;
 		}
 		
 		dto.setResponseStatus(ResponseStatus.OK);
 		return dto;
 	}
-
-	public ValidationDTO validateItem(Long competitionId, String itemId) {
-		
-		ValidationDTO dto = new ValidationDTO();
-		
-		Competition competition = this.getById(competitionId);
-		
-		ResponseStatus competitionStatus = validateCompetition(competition);
-		if (!ResponseStatus.OK.equals(competitionStatus)) {
-			dto.setResponseStatus(competitionStatus);
-			return dto;
-		}
-		
-		RatingItem ratingItem = ratingItemRepository.findByPublicId(itemId).orElse(null) ;
-		if (ratingItem == null) {
-			dto.setResponseStatus(ResponseStatus.ERROR_NOT_FOUND_RATING_ITEM);
-			return dto;
-		}
-
-		if (!Boolean.TRUE.equals(ratingItem.getIsActive())) {
-			dto.setResponseStatus(ResponseStatus.ERROR_NOT_ACTIVE_RATING_ITEM);
-			return dto;
-		}
-		
-		if (!competition.equals(ratingItem.getCompetition())) {
-			dto.setResponseStatus(ResponseStatus.ERROR_MATCH_COMPETION_RATING_ITEM);
-			return dto;
-		}
-		
-		dto.setResponseStatus(ResponseStatus.OK);
-		return dto;
-		
-	}
-
-	public RatingItemDTO getRatingItemWithScore(Long competitionId, String itemId) {
-		
-		RatingItemDTO dto = new RatingItemDTO();
-		ValidationDTO validationDTO = validateItem(competitionId, itemId);
-
-		if(!ResponseStatus.OK.equals(validationDTO.getResponseStatus())) {
-			dto.setResponseStatus(validationDTO.getResponseStatus());
-			return dto;
-		}
-		
-		RatingItem ratingItem = ratingItemRepository.findByPublicId(itemId).orElse(null) ;
-		if (ratingItem != null) {
-			dto =  modelMapper.map(ratingItem, RatingItemDTO.class);
-		
-			List<Object[]> statistics = ratingRepository.statistics(competitionId, ratingItem.getId());
-			if (!CollectionUtils.isEmpty(statistics)) {
-				Object[] obj = statistics.get(0);
-				
-				if (obj[1] != null) {
-					dto.setScore(((Double) obj[1]).intValue());
-				}
-			}
-			dto.setResponseStatus(ResponseStatus.OK);
-		} else {
-			dto.setResponseStatus(ResponseStatus.ERROR_NOT_FOUND_RATING_ITEM);
-			
-		}
-
-		return dto;
-	}
+	
 
 }

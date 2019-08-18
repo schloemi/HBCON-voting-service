@@ -38,25 +38,14 @@ public class RatingService extends AbstractEntityService<Rating, RatingDTO, Crud
 	
 	
 	
-	public RatingService() {
-		// TODO Auto-generated constructor stub
-	}
-
 	@Override
 	public RatingDTO convertToDto(Rating pItem) {
 		return (pItem == null)? null : modelMapper.map(pItem, RatingDTO.class);
 	}
 
-	public RatingDTO rate(Long competitionId, String codeId, String itemId, Float value) {
+	public RatingDTO rate(String codeId, String itemId, Float value) {
 		RatingDTO dto = new RatingDTO();
 		
-		Competition competition = competitionService.getById(competitionId);
-		
-		ResponseStatus competitionStatus = competitionService.validateCompetition(competition);
-		if (!ResponseStatus.OK.equals(competitionStatus)) {
-			dto.setResponseStatus(competitionStatus);
-			return dto;
-		}
 		
 		if (StringUtils.isEmpty(codeId)) {
 			dto.setResponseStatus(ResponseStatus.ERROR_READING_RATING_CODE);
@@ -76,6 +65,14 @@ public class RatingService extends AbstractEntityService<Rating, RatingDTO, Crud
 		
 		if (Boolean.TRUE.equals(ratingCode.getExpired())) {
 			dto.setResponseStatus(ResponseStatus.ERROR_RATING_CODE_EXPIRED);
+			return dto;
+		}
+		
+		Competition competition = ratingCode.getCompetition();
+		
+		ResponseStatus competitionStatus = competitionService.validateCompetition(competition);
+		if (!ResponseStatus.OK.equals(competitionStatus)) {
+			dto.setResponseStatus(competitionStatus);
 			return dto;
 		}
 		
@@ -121,6 +118,15 @@ public class RatingService extends AbstractEntityService<Rating, RatingDTO, Crud
 		dto.setRatingsLeft(--ratingsLeft);
 		dto.setResponseStatus(ResponseStatus.OK);
 		return dto;
+	}
+
+	public int getRatingsLeft(RatingCode ratingCode) {
+		if (ratingCode == null || ratingCode.getCompetition() == null) {
+			return 0;
+		}
+		List<Rating> ratingsWithCode = ratingRepository.findByRatingCode(ratingCode);
+		return ratingCode.getCompetition().getMaxRatingPerCode() - (!CollectionUtils.isEmpty(ratingsWithCode)? ratingsWithCode.size() : 0);
+		
 	}
 
 }

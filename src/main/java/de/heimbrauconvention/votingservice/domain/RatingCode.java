@@ -14,7 +14,9 @@ import javax.validation.constraints.NotNull;
 @Table(name = "rating_code")
 public class RatingCode extends AbstractEntity {
 
-	private Boolean expired;;
+	private Boolean activated;
+	
+	private Boolean expired;
 
 	private Boolean printed;
 
@@ -50,6 +52,17 @@ public class RatingCode extends AbstractEntity {
 		this.ratings = ratings;
 	}
 
+	public Boolean getActivated() {
+		if (activated == null) {
+			activated = Boolean.FALSE;
+		}
+		return activated;
+	}
+
+	public void setActivated(Boolean activated) {
+		this.activated = activated;
+	}
+
 	public Boolean getExpired() {
 		if (expired == null) {
 			expired = Boolean.FALSE;
@@ -67,7 +80,7 @@ public class RatingCode extends AbstractEntity {
 		}
 		return printed;
 	}
-
+	
 	public void setPrinted(Boolean printed) {
 		this.printed = printed;
 	}
