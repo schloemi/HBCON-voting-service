@@ -40,7 +40,6 @@ public class RatingItemService extends AbstractEntityService<RatingItem, RatingI
 	public ValidationDTO validate(String publicId) {
 		ValidationDTO dto = new ValidationDTO();
 		
-		
 		RatingItem ratingItem = ratingItemRepository.findByPublicId(publicId).orElse(null) ;
 		if (ratingItem == null) {
 			dto.setResponseStatus(ResponseStatus.ERROR_NOT_FOUND_RATING_ITEM);
@@ -53,7 +52,6 @@ public class RatingItemService extends AbstractEntityService<RatingItem, RatingI
 		}
 		
 		Competition competition = ratingItem.getCompetition();
-		
 		ResponseStatus competitionStatus = competitionService.validateCompetition(competition);
 		if (!ResponseStatus.OK.equals(competitionStatus)) {
 			dto.setResponseStatus(competitionStatus);
@@ -62,7 +60,6 @@ public class RatingItemService extends AbstractEntityService<RatingItem, RatingI
 		
 		dto.setResponseStatus(ResponseStatus.OK);
 		return dto;
-		
 	}
 	
 	public RatingItemDTO getRatingItem(String publicId) {
@@ -79,24 +76,24 @@ public class RatingItemService extends AbstractEntityService<RatingItem, RatingI
 			return dto;
 		}
 		
-		RatingItem ratingItem = ratingItemRepository.findByPublicId(publicId).orElse(null) ;
-		if (ratingItem != null) {
-			dto =  modelMapper.map(ratingItem, RatingItemDTO.class);
-			dto.setResponseStatus(ResponseStatus.OK);
-			if(withwScore) {
-				List<Object[]> statistics = ratingRepository.statistics(ratingItem.getCompetition().getId(), ratingItem.getId());
-				if (!CollectionUtils.isEmpty(statistics)) {
-					Object[] obj = statistics.get(0);
-					
-					if (obj[1] != null) {
-						dto.setScore(((Double) obj[1]).intValue());
-					}
+		RatingItem ratingItem = ratingItemRepository.findByPublicId(publicId).orElse(null);
+		if (ratingItem == null) {
+			dto.setResponseStatus(ResponseStatus.ERROR_NOT_FOUND_RATING_ITEM);
+			return dto;
+		}	
+		
+		dto =  modelMapper.map(ratingItem, RatingItemDTO.class);
+		dto.setResponseStatus(ResponseStatus.OK);
+		if (withwScore) {
+			List<Object[]> statistics = ratingRepository.statistics(ratingItem.getCompetition().getId(), ratingItem.getId());
+			if (!CollectionUtils.isEmpty(statistics)) {
+				Object[] obj = statistics.get(0);
+				if (obj[1] != null) {
+					dto.setScore(((Double) obj[1]).intValue());
 				}
 			}
-			
-		} else {
-			dto.setResponseStatus(ResponseStatus.ERROR_NOT_FOUND_RATING_ITEM);
 		}
+		
 		return dto;
 	}
 

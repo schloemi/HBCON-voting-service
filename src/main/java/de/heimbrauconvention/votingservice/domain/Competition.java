@@ -9,6 +9,7 @@ import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.JoinColumn;
+import javax.persistence.ManyToMany;
 import javax.persistence.OneToMany;
 import javax.persistence.OrderBy;
 import javax.persistence.Table;
@@ -19,8 +20,9 @@ import javax.persistence.TemporalType;
 @Table(name = "competition")
 public class Competition extends AbstractEntity {
 
-	public static final Integer MAX_RATING_SCORE = 1;
+	public static final Float 	MAX_RATING_SCORE = 1.0F;
 	public static final Integer MAX_RATING_PER_CODE = 5;
+	
 
 	@Temporal(value = TemporalType.TIMESTAMP)
 	@Column(name = "start_date")
@@ -49,19 +51,18 @@ public class Competition extends AbstractEntity {
 	private Boolean distinctRating = Boolean.FALSE;
 
 	@Column(name = "max_rating_score")
-	private Integer maxRatingScore;
+	private Float maxRatingScore = MAX_RATING_SCORE;
 
 	@Column(name = "max_rating_score_per_code")
-	private Integer maxRatingPerCode;
+	private Integer maxRatingPerCode = MAX_RATING_PER_CODE;
 
 	@OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
 	@JoinColumn(name = "competition_id")
 	@OrderBy(value = "publicId")
-	private Set<RatingItem> ratingItems;
+	private Set<RatingItem> ratingItems = new HashSet<RatingItem>();
 
-	@OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
-	@JoinColumn(name = "competition_id")
-	private Set<RatingCode> ratingCodes;
+	@ManyToMany(mappedBy = "competitions", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+	private Set<RatingCode> ratingCodes = new HashSet<RatingCode>();
 
 	public Competition() {
 		super();
@@ -131,21 +132,15 @@ public class Competition extends AbstractEntity {
 		this.distinctRating = distinctRating;
 	}
 
-	public Integer getMaxRatingScore() {
-		if (maxRatingScore == null) {
-			maxRatingScore = MAX_RATING_SCORE;
-		}
+	public Float getMaxRatingScore() {
 		return maxRatingScore;
 	}
 
-	public void setMaxRatingScore(Integer maxRatingScore) {
+	public void setMaxRatingScore(Float maxRatingScore) {
 		this.maxRatingScore = maxRatingScore;
 	}
 
 	public Integer getMaxRatingPerCode() {
-		if (maxRatingPerCode == null) {
-			maxRatingPerCode = MAX_RATING_PER_CODE;
-		}
 		return maxRatingPerCode;
 	}
 
@@ -154,9 +149,6 @@ public class Competition extends AbstractEntity {
 	}
 
 	public Set<RatingCode> getRatingCodes() {
-		if (ratingCodes == null) {
-			ratingCodes = new HashSet<RatingCode>();
-		}
 		return ratingCodes;
 	}
 
@@ -165,9 +157,6 @@ public class Competition extends AbstractEntity {
 	}
 
 	public Set<RatingItem> getRatingItems() {
-		if (ratingItems == null) {
-			ratingItems = new HashSet<RatingItem>();
-		}
 		return ratingItems;
 	}
 

@@ -27,11 +27,7 @@ public abstract class AbstractEntityService<T extends AbstractEntity, S extends 
 	@Autowired
 	protected ModelMapper modelMapper;
 	
-	public AbstractEntityService() {
-		// TODO Auto-generated constructor stub
-	}
 
-	
 	public void save(final T pItem) {
 		if (pItem == null){
 			return;

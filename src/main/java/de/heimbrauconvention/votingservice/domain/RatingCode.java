@@ -1,47 +1,52 @@
 package de.heimbrauconvention.votingservice.domain;
 
+import java.util.HashSet;
 import java.util.Set;
 
 import javax.persistence.CascadeType;
+import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
-import javax.persistence.ManyToOne;
+import javax.persistence.JoinColumn;
+import javax.persistence.JoinTable;
+import javax.persistence.ManyToMany;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
-import javax.validation.constraints.NotNull;
 
 @Entity
 @Table(name = "rating_code")
 public class RatingCode extends AbstractEntity {
 
-	private Boolean activated;
+	@Column(name = "is_active")
+	private Boolean isActive = Boolean.FALSE;
 	
-	private Boolean expired;
+	private Boolean printed = Boolean.FALSE;
 
-	private Boolean printed;
-
-	@NotNull
-	@ManyToOne
-	private Competition competition;
+	@ManyToMany(cascade = CascadeType.ALL, fetch =  FetchType.LAZY)
+	@JoinTable(name = "rating_code_2_competition",
+	    joinColumns = @JoinColumn(name = "rating_code_id"),
+	    inverseJoinColumns = @JoinColumn(name = "competition_id")
+	)
+	private Set<Competition> competitions = new HashSet<Competition>();
 
 	@OneToMany(mappedBy = "ratingCode", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
-	private Set<Rating> ratings;
+	private Set<Rating> ratings = new HashSet<Rating>();
 
 	public RatingCode() {
 		super();
 	}
 
-	public RatingCode(@NotNull Competition competition) {
+	public RatingCode(Set<Competition> competitions) {
 		this();
-		this.competition = competition;
+		this.competitions = competitions;
 	}
 
-	public Competition getCompetition() {
-		return competition;
+	public Set<Competition> getCompetitions() {
+		return competitions;
 	}
 
-	public void setCompetition(Competition competition) {
-		this.competition = competition;
+	public void setCompetitions(Set<Competition> competitions) {
+		this.competitions = competitions;
 	}
 
 	public Set<Rating> getRatings() {
@@ -52,32 +57,15 @@ public class RatingCode extends AbstractEntity {
 		this.ratings = ratings;
 	}
 
-	public Boolean getActivated() {
-		if (activated == null) {
-			activated = Boolean.FALSE;
-		}
-		return activated;
+	public Boolean getIsActive() {
+		return isActive;
 	}
 
-	public void setActivated(Boolean activated) {
-		this.activated = activated;
-	}
-
-	public Boolean getExpired() {
-		if (expired == null) {
-			expired = Boolean.FALSE;
-		}
-		return expired;
-	}
-
-	public void setExpired(Boolean expired) {
-		this.expired = expired;
+	public void setIsActive(Boolean isActive) {
+		this.isActive = isActive;
 	}
 
 	public Boolean getPrinted() {
-		if (printed == null) {
-			printed = Boolean.FALSE;
-		}
 		return printed;
 	}
 	

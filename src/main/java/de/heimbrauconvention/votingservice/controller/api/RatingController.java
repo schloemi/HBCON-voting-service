@@ -33,6 +33,8 @@ public class RatingController {
 		return ratingService.rate(codeId, itemId, 1.0F);
 	}
 
+	
+	
 	// TODO: Make this a POST-Mapping
 	@GetMapping(path = "/rating/code/{codeId}/item/{itemId}/value/{value}", produces = MediaType.APPLICATION_JSON_VALUE)
 	public RatingDTO rateWithValue(

@@ -41,18 +41,25 @@ public class RatingCodeService extends AbstractEntityService<RatingCode, RatingC
 			return dto;
 		}
 
-		if (Boolean.TRUE.equals(ratingCode.getExpired())) {
-			dto.setResponseStatus(ResponseStatus.ERROR_RATING_CODE_EXPIRED);
+		if (!Boolean.TRUE.equals(ratingCode.getIsActive())) {
+			dto.setResponseStatus(ResponseStatus.ERROR_RATING_CODE_NOT_ACTIVE);
 			return dto;
 		}
 		
+		
+		/**
+		 * 
+		 * TODO: refactoring
+		 */
+		
+		/*
 		Competition competition = ratingCode.getCompetition();
 		
 		ResponseStatus competitionStatus = competitionService.validateCompetition(competition);
 		if (!ResponseStatus.OK.equals(competitionStatus)) {
 			dto.setResponseStatus(competitionStatus);
 			return dto;
-		}
+		}*/
 		
 		dto.setResponseStatus(ResponseStatus.OK);
 		return dto;
@@ -70,8 +77,12 @@ public class RatingCodeService extends AbstractEntityService<RatingCode, RatingC
 		RatingCode ratingCode = repository.findByPublicId(publicId).orElse(null) ;
 		if (ratingCode != null) {
 			dto =  modelMapper.map(ratingCode, RatingCodeDTO.class);
-			dto.setRatingsLeft(ratingService.getRatingsLeft(ratingCode));
 			dto.setResponseStatus(ResponseStatus.OK);
+			
+			/**
+			 * 
+			 * TODO Hier müssen noch die Competitions rein.
+			 */
 		}
 		return dto;
 	}

@@ -1,5 +1,6 @@
 package de.heimbrauconvention.votingservice.domain;
 
+import java.util.HashSet;
 import java.util.Set;
 
 import javax.persistence.CascadeType;
@@ -28,14 +29,14 @@ public class RatingItem extends AbstractEntity {
 	private String email;
 
 	@Column(name = "is_active")
-	private Boolean isActive;
+	private Boolean isActive = Boolean.FALSE;
 
 	@NotNull
 	@ManyToOne
 	private Competition competition;
 
 	@OneToMany(mappedBy = "ratingItem", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
-	private Set<Rating> ratings;
+	private Set<Rating> ratings = new HashSet<Rating>();
 
 	public RatingItem() {
 		super();
@@ -82,9 +83,6 @@ public class RatingItem extends AbstractEntity {
 	}
 
 	public void setIsActive(Boolean isActive) {
-		if (isActive == null) {
-			isActive = Boolean.FALSE;
-		}
 		this.isActive = isActive;
 	}
 

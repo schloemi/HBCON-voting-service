@@ -10,6 +10,8 @@ import javax.validation.constraints.NotNull;
 @Table(name = "rating")
 public class Rating extends AbstractEntity {
 
+	public static final Float DEFAULT_VALUE = 1.0F;
+	
 	@NotNull
 	@ManyToOne
 	@JoinColumn(name = "rating_item_id")
@@ -20,20 +22,20 @@ public class Rating extends AbstractEntity {
 	@JoinColumn(name = "rating_code_id")
 	RatingCode ratingCode;
 	
-	Float value;
+	Float value =  DEFAULT_VALUE;
 	
 	public Rating() {
 		super();
 	}
 	
 	public Rating(@NotNull RatingItem ratingItem, @NotNull RatingCode ratingCode) {
-		this(ratingItem, ratingCode, null);
+		this(ratingItem, ratingCode, DEFAULT_VALUE);
 	}
 	
 	public Rating(@NotNull RatingItem ratingItem, @NotNull RatingCode ratingCode, Float value) {
 		this.ratingItem = ratingItem;
 		this.ratingCode = ratingCode;
-		this.value = (value != null)? value : 1.0F;
+		this.value = (value != null && value > 0.0F )? value : DEFAULT_VALUE;
 	}
 
 	public RatingItem getRatingItem() {

@@ -88,7 +88,7 @@ public class CompetitionService extends AbstractEntityService<Competition, Compe
 			return ResponseStatus.ERROR_COMPETITION_HAS_ENDED;
 		}
 		
-		if (competition.getStartDate() != null && now.before(competition.getEndDate())) {
+		if (competition.getStartDate() != null && now.before(competition.getStartDate())) {
 			return ResponseStatus.ERROR_COMPETITION_HAS_NOT_BEGUN;
 		}
 		
