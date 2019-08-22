@@ -1,6 +1,7 @@
 package de.heimbrauconvention.votingservice.service;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -17,30 +18,30 @@ import de.heimbrauconvention.votingservice.dto.AbstractEntityDTO;
 
 @Transactional
 @Service
-public abstract class AbstractEntityService<T extends AbstractEntity, S extends AbstractEntityDTO, R extends CrudRepository<T, Long>> {
+public abstract class AbstractEntityService<T extends AbstractEntity, S extends AbstractEntityDTO<T>, R extends CrudRepository<T, Long>> {
 
-	public abstract S convertToDto(final T pItem);
+	protected abstract S convertToDto(final T pItem);
 	
 	@Autowired
-	protected R repository;
+	private R repository;
 	
 	@Autowired
-	protected ModelMapper modelMapper;
+	public ModelMapper modelMapper;
 	
 
 	public void save(final T pItem) {
 		if (pItem == null){
 			return;
 		}
-		this.repository.save(pItem);
+		getRepsoitory().save(pItem);
 	}
 
 	public T getById(final Long id) {
-		return this.repository.findById(id).orElse(null);
+		return getRepsoitory().findById(id).orElse(null);
 	}
 
 	public Iterable<T> getAll() {
-		return this.repository.findAll();
+		return getRepsoitory().findAll();
 	}
 	
 	public List<T> getAllAsList() {
@@ -53,11 +54,16 @@ public abstract class AbstractEntityService<T extends AbstractEntity, S extends 
 	}
 	
 	public List<S> convertToDto(final List<T> pItemsList){
-		List<S> dtos = new ArrayList<>();
-		if (!CollectionUtils.isEmpty(pItemsList)){
-			dtos = pItemsList.stream().map(item -> convertToDto(item)).collect(Collectors.toList());
+		if (CollectionUtils.isEmpty(pItemsList)){
+			return Collections.emptyList();
 		}
-	    return dtos;
+		return pItemsList.stream()
+				.map(item -> convertToDto(item))
+				.collect(Collectors.toList());
+	}
+	
+	public R getRepsoitory() {
+		return repository;
 	}
 	
 	

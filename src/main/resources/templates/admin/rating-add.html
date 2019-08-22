@@ -26,7 +26,6 @@
 					      <th scope="col">Rating Code</th>
 					      <th scope="col">Rating Item</th>
 					      <th scope="col">Status</th>
-					      <th scope="col">Ratings Left</th>
 					    </tr>
 					</thead>
 					<tbody>
@@ -38,7 +37,6 @@
 								<img th:src="${'/web/utils/qrcode/' + item.ratingItemDTO.publicId }" width="100" height="100">
 							</th>
 							<td th:text="${item.responseStatus}">Status</td>
-							<td th:text="${item.ratingsLeft}">Ratings Left</td>
 						</tr>
 					  </tbody>
 				</table>

@@ -74,7 +74,7 @@
 					var chartdata = {
 						labels : title,
 						datasets : [ {
-							label : 'Top Scores',
+							label : 'Hall of Fame',
 							data : score,
 							backgroundColor: backgroundColor
 						}]
@@ -86,10 +86,19 @@
 						type : 'bar',
 						position : 'top',
 						data : chartdata,
+						
 						options : {
 							legend : {
 								display : false
-							}
+							},
+							
+							scales: {
+						        yAxes: [{
+						            ticks: {
+						                beginAtZero: true
+						            }
+						        }]
+						    }
 						}
 					});
 				},

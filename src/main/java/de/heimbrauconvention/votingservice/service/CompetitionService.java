@@ -2,6 +2,7 @@ package de.heimbrauconvention.votingservice.service;
 
 import java.util.Date;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import javax.transaction.Transactional;
 
@@ -9,6 +10,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.repository.CrudRepository;
 import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
+import org.springframework.util.StringUtils;
 
 import de.heimbrauconvention.votingservice.domain.Competition;
 import de.heimbrauconvention.votingservice.dto.CompetitionDTO;
@@ -30,10 +32,8 @@ public class CompetitionService extends AbstractEntityService<Competition, Compe
 	@Autowired
 	RatingItemRepository ratingItemRepository;
 	
-	
 	@Autowired
 	RatingRepository ratingRepository;
-	
 	
 	
 	@Override
@@ -46,6 +46,14 @@ public class CompetitionService extends AbstractEntityService<Competition, Compe
 			dto.setResponseStatus(ResponseStatus.OK);
 		}
 		return dto;
+	}
+	
+	public List<CompetitionDTO> getAllActiveCompetitions() {
+		return this.getAllAsList()
+			.stream()
+			.filter(c -> c.getIsActive())
+			.map(c -> convertToDto(c))
+			.collect(Collectors.toList());
 	}
 
 	public StatisticDTO getStatistic(Long competitionId) {
@@ -65,7 +73,7 @@ public class CompetitionService extends AbstractEntityService<Competition, Compe
 				}
 				String ratingItemId = (String) objects[0];
 				Integer amount = (objects[1] == null)? 0 : ((Double) objects[1]).intValue();
-				String title = (objects[2] == null)? "Kein Title" :(String) objects[2];
+				String title = (objects[2] == null)? "NO_TITLE" :(String) objects[2];
 				RatingScoreDTO score = new RatingScoreDTO(ratingItemId, amount, title);
 				dto.getScores().add(score);
 			}
@@ -74,40 +82,53 @@ public class CompetitionService extends AbstractEntityService<Competition, Compe
 		return dto;
 	}
 	
-	public ResponseStatus validateCompetition(Competition competition) {
-		if (competition == null) {
-			return ResponseStatus.ERROR_NOT_FOUND_COMPETITION;
-		}
-		
-		if (!Boolean.TRUE.equals(competition.getIsActive())) {
-			return ResponseStatus.ERROR_NOT_ACTIVE_COMPETITION;
-		}
-		
-		Date now = new Date();
-		if (competition.getEndDate() != null && now.after(competition.getEndDate())) {
-			return ResponseStatus.ERROR_COMPETITION_HAS_ENDED;
-		}
-		
-		if (competition.getStartDate() != null && now.before(competition.getStartDate())) {
-			return ResponseStatus.ERROR_COMPETITION_HAS_NOT_BEGUN;
-		}
-		
-		
-		return ResponseStatus.OK;
-	}
 	
-	
-	public ValidationDTO validateCompetition(Long competitionId) {
-		ValidationDTO dto = new ValidationDTO();
+	public ValidationDTO<Competition> validate(Long competitionId, ValidationDTO<Competition> dto, boolean checkTimeFrame) {
 		
-		Competition competition = this.getById(competitionId);
+		dto.setResponseStatus(ResponseStatus.OK);
 		
-		ResponseStatus competitionStatus = validateCompetition(competition);
-		if (!ResponseStatus.OK.equals(competitionStatus)) {
-			dto.setResponseStatus(competitionStatus);
+		if (StringUtils.isEmpty(competitionId)) {
+			dto.setResponseStatus(ResponseStatus.ERROR_READING_COMPETITION);
 			return dto;
 		}
 		
+		Competition competition = this.getById(competitionId);
+		dto.setEntity(competition);
+		if (competition == null) {
+			dto.setResponseStatus(ResponseStatus.ERROR_NOT_FOUND_COMPETITION);
+			return dto;
+		}
+		
+		if (!Boolean.TRUE.equals(competition.getIsActive())) {
+			dto.setResponseStatus(ResponseStatus.ERROR_NOT_ACTIVE_COMPETITION);
+		}
+		
+		if (Boolean.TRUE.equals(checkTimeFrame)) {
+			Date now = new Date();
+			if (competition.getEndDate() != null && now.after(competition.getEndDate())) {
+				dto.setResponseStatus(ResponseStatus.ERROR_COMPETITION_HAS_ENDED);
+			}
+			
+			if (competition.getStartDate() != null && now.before(competition.getStartDate())) {
+				dto.setResponseStatus(ResponseStatus.ERROR_COMPETITION_HAS_NOT_BEGUN);
+			}
+		}
+		return dto;
+	}
+	
+	
+	public CompetitionDTO getDTO(Long competitionId) {
+		CompetitionDTO dto = new CompetitionDTO();
+		ValidationDTO<Competition> validationDTO = new ValidationDTO<>();
+		validate(competitionId, validationDTO, false);
+		
+		if(!ResponseStatus.OK.equals(validationDTO.getResponseStatus())) {
+			dto.setResponseStatus(validationDTO.getResponseStatus());
+			return dto;
+		}
+		
+		dto = modelMapper.map(validationDTO.getEntity(), CompetitionDTO.class);
+		dto.setEntity(validationDTO.getEntity());
 		dto.setResponseStatus(ResponseStatus.OK);
 		return dto;
 	}

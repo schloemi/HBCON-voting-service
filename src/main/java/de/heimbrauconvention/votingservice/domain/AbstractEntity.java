@@ -11,6 +11,14 @@ import javax.persistence.PreUpdate;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 
+import lombok.Getter;
+import lombok.Setter;
+import lombok.ToString;
+
+
+@Getter
+@Setter
+@ToString
 @MappedSuperclass
 public abstract class AbstractEntity {
 
@@ -41,39 +49,5 @@ public abstract class AbstractEntity {
     public void preUpdate() {
         this.modificationTime = new Date();
     }
-    
-    public Long getId() {
-    	return id;
-    }
-    
-    public void setId(Long id) {
-    	this.id = id;
-    }
-    
-    public Date getCreationTime() {
-    	return creationTime;
-    }
-    
-    public void setCreationTime(Date creationTime) {
-    	this.creationTime = creationTime;
-    }
-    
-    public Date getModificationTime() {
-    	return modificationTime;
-    }
-    
-    public void setModificationTime(Date modificationTime) {
-    	this.modificationTime = modificationTime;
-    }
-
-	public String getPublicId() {
-		return publicId;
-	}
-
-	public void setPublicId(String publicId) {
-		this.publicId = publicId;
-	}
-    
-    
 
 }

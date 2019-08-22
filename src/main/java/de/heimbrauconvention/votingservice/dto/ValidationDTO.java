@@ -1,26 +1,19 @@
 package de.heimbrauconvention.votingservice.dto;
 
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
+import de.heimbrauconvention.votingservice.domain.AbstractEntity;
+import lombok.Getter;
+import lombok.Setter;
+import lombok.ToString;
 
-public class ValidationDTO extends AbstractDTO{
+@Getter
+@Setter
+@ToString
+public class ValidationDTO<T extends AbstractEntity> extends AbstractDTO {
 
-	private List<RatingScoreDTO> scores;
+	private T entity;
 	
 	public ValidationDTO() {
-		setCreationTime( new Date());
-	}
-
-	public List<RatingScoreDTO> getScores() {
-		if (scores == null) {
-			scores = new ArrayList<RatingScoreDTO>();
-		}
-		return scores;
-	}
-
-	public void setScores(List<RatingScoreDTO> scores) {
-		this.scores = scores;
-	}
 	
+	}
+
 }

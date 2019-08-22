@@ -1,5 +1,6 @@
 package de.heimbrauconvention.votingservice.service;
 
+import java.math.BigInteger;
 import java.util.List;
 
 import javax.transaction.Transactional;
@@ -8,16 +9,13 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.repository.CrudRepository;
 import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
-import org.springframework.util.StringUtils;
 
-import de.heimbrauconvention.votingservice.domain.Competition;
 import de.heimbrauconvention.votingservice.domain.Rating;
-import de.heimbrauconvention.votingservice.domain.RatingCode;
-import de.heimbrauconvention.votingservice.domain.RatingItem;
+import de.heimbrauconvention.votingservice.dto.CompetitionDTO;
+import de.heimbrauconvention.votingservice.dto.RatingCodeDTO;
 import de.heimbrauconvention.votingservice.dto.RatingDTO;
+import de.heimbrauconvention.votingservice.dto.RatingItemDTO;
 import de.heimbrauconvention.votingservice.dto.ResponseStatus;
-import de.heimbrauconvention.votingservice.repository.RatingCodeRepository;
-import de.heimbrauconvention.votingservice.repository.RatingItemRepository;
 import de.heimbrauconvention.votingservice.repository.RatingRepository;
 
 @Transactional
@@ -28,10 +26,10 @@ public class RatingService extends AbstractEntityService<Rating, RatingDTO, Crud
 	RatingRepository ratingRepository;
 	
 	@Autowired
-	RatingItemRepository ratingItemRepository;
+	RatingItemService ratingItemService;
 	
 	@Autowired
-	RatingCodeRepository ratingCodeRepository;
+	RatingCodeService ratingCodeService;
 	
 	@Autowired
 	CompetitionService competitionService;
@@ -45,100 +43,59 @@ public class RatingService extends AbstractEntityService<Rating, RatingDTO, Crud
 	public RatingDTO rate(String codeId, String itemId, Float value) {
 		RatingDTO dto = new RatingDTO();
 		
-		if (StringUtils.isEmpty(codeId)) {
-			dto.setResponseStatus(ResponseStatus.ERROR_READING_RATING_CODE);
+		RatingItemDTO ratingItemDTO = ratingItemService.getDTO(itemId);
+		dto.setRatingItemDTO(ratingItemDTO);
+		if (!ResponseStatus.OK.equals(ratingItemDTO.getResponseStatus())) {
+			dto.setResponseStatus(ratingItemDTO.getResponseStatus());
 			return dto;
 		}
 		
-		if (StringUtils.isEmpty(itemId)) {
-			dto.setResponseStatus(ResponseStatus.ERROR_READING_RATING_ITEM);
+		RatingCodeDTO ratingCodeDTO = ratingCodeService.getDTO(codeId);;
+		dto.setRatingCodeDTO(ratingCodeDTO);
+		if (!ResponseStatus.OK.equals(ratingCodeDTO.getResponseStatus())) {
+			dto.setResponseStatus(ratingCodeDTO.getResponseStatus());
 			return dto;
 		}
 		
-		RatingItem ratingItem = ratingItemRepository.findByPublicId(itemId).orElse(null);
-		if (ratingItem == null) {
-			dto.setResponseStatus(ResponseStatus.ERROR_NOT_FOUND_RATING_ITEM);
+		CompetitionDTO competitionDTO = competitionService.getDTO(ratingItemDTO.getCompetitionDTO().getId());
+		dto.setCompetitionDTO(competitionDTO);
+		if (!ResponseStatus.OK.equals(competitionDTO.getResponseStatus())) {
+			dto.setResponseStatus(competitionDTO.getResponseStatus());
 			return dto;
 		}
 		
-		if (!Boolean.TRUE.equals(ratingItem.getIsActive())) {
-			dto.setResponseStatus(ResponseStatus.ERROR_NOT_ACTIVE_RATING_ITEM);
-			return dto;
-		}
-		
-		Competition competition = ratingItem.getCompetition();
-		
-		if (!competition.equals(ratingItem.getCompetition())) {
-			dto.setResponseStatus(ResponseStatus.ERROR_MATCH_RATING_CODE_ITEM);
-			return dto;
-		}
-		
-		ResponseStatus competitionStatus = competitionService.validateCompetition(competition);
-		if (!ResponseStatus.OK.equals(competitionStatus)) {
-			dto.setResponseStatus(competitionStatus);
-			return dto;
-		}
-		
-		
-		
-		RatingCode ratingCode = ratingCodeRepository.findByPublicId(codeId).orElse(null);
-		if (ratingCode == null) {
-			dto.setResponseStatus(ResponseStatus.ERROR_NOT_FOUND_RATING_CODE);
-			return dto;
-		}
-		
-		if (!Boolean.TRUE.equals(ratingCode.getIsActive())) {
-			dto.setResponseStatus(ResponseStatus.ERROR_RATING_CODE_NOT_ACTIVE);
-			return dto;
-		}
-		
-		
-		/**
-		 * 
-		 * TODO: refactor
-		 * 
-		List<Rating> ratingsWithCode = ratingRepository.findByRatingCode(ratingCode);
-		int ratingsLeft = competition.getMaxRatingPerCode() - (!CollectionUtils.isEmpty(ratingsWithCode)? ratingsWithCode.size() : 0);
-		if (ratingsLeft < 1) {
-			ratingCodeRepository.save(ratingCode);
-			dto.setResponseStatus(ResponseStatus.ERROR_RATING_CODE_NOT_ACTIVE);
-			dto.setRatingsLeft(0);
-			return dto;
-		}
-	
-		if (!CollectionUtils.isEmpty(ratingsWithCode) && Boolean.TRUE.equals(competition.getDistinctRating())) {
-			for (Rating rating : ratingsWithCode) {
-				if (ratingItem.equals(rating.getRatingItem())) {
-					dto.setResponseStatus(ResponseStatus.ERROR_DISTINCT_RATING);
+		List<Object[]> competitionRatings = ratingRepository.getCompetitionRatingsForRatingCode(ratingCodeDTO.getEntity().getId());
+		if (!CollectionUtils.isEmpty(competitionRatings)) {
+			for (Object[] competitionRating : competitionRatings) {
+				if (	((BigInteger)competitionRating[0]).longValue() == competitionDTO.getEntity().getId() && 
+						((BigInteger)competitionRating[2]).longValue() < 1L) {
+					dto.setResponseStatus(ResponseStatus.ERROR_NO_RATINGS_LEFT);
 					return dto;
 				}
 			}
-		} **/
+		}
 		
-		Rating newRating = new Rating(ratingItem, ratingCode, value);
+		if (Boolean.TRUE.equals(competitionDTO.getEntity().getDistinctRating())) {
+			List<Rating> ratingsWithCode = ratingRepository.findByRatingCodeAndRatingItem(ratingCodeDTO.getEntity(), ratingItemDTO.getEntity());
+			if (!CollectionUtils.isEmpty(ratingsWithCode)) {
+				dto.setResponseStatus(ResponseStatus.ERROR_DISTINCT_RATING);
+				return dto;
+			} 
+		}	
+		
+		Rating newRating = new Rating(ratingItemDTO.getEntity(), ratingCodeDTO.getEntity(), value);
 		ratingRepository.save(newRating);
-		dto = convertToDto(newRating);
+		
+		RatingDTO newDTO = convertToDto(newRating);
+		newDTO.setRatingCodeDTO(dto.getRatingCodeDTO());
+		newDTO.setRatingItemDTO(dto.getRatingItemDTO());
+		newDTO.setCompetitionDTO(dto.getCompetitionDTO());
+		
+		ratingCodeService.addRatingCodeContingent(newDTO.getRatingCodeDTO());
 		dto.setResponseStatus(ResponseStatus.OK);
+		
 		return dto;
 	}
 
-	
-	/**
-	 * 
-	 * TODO: refactoring
-	 * 
-	 * @param ratingCode
-	 * @return
-	 */
-	
-	/**
-	public int getRatingsLeft(RatingCode ratingCode) {
-		if (ratingCode == null || ratingCode.getCompetition() == null) {
-			return 0;
-		}
-		List<Rating> ratingsWithCode = ratingRepository.findByRatingCode(ratingCode);
-		return ratingCode.getCompetition().getMaxRatingPerCode() - (!CollectionUtils.isEmpty(ratingsWithCode)? ratingsWithCode.size() : 0);
-		
-	}**/
 
 }

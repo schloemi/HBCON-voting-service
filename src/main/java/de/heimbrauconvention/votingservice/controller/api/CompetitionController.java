@@ -11,7 +11,6 @@ import org.springframework.web.bind.annotation.RestController;
 
 import de.heimbrauconvention.votingservice.dto.CompetitionDTO;
 import de.heimbrauconvention.votingservice.dto.StatisticDTO;
-import de.heimbrauconvention.votingservice.dto.ValidationDTO;
 import de.heimbrauconvention.votingservice.service.CompetitionService;
 
 @RestController
@@ -19,13 +18,13 @@ import de.heimbrauconvention.votingservice.service.CompetitionService;
 public class CompetitionController {
 
 	@Autowired
-	CompetitionService seervice;
+	CompetitionService service;
 
 	
 	@GetMapping(path = "/competitions", produces = MediaType.APPLICATION_JSON_VALUE)
 	public List<CompetitionDTO> listCompetition() {
 		
-		return seervice.convertToDto(seervice.getAllAsList());
+		return service.getAllActiveCompetitions();
 	}
 
 	@GetMapping(path = "/competitions/{competitionId}", produces = MediaType.APPLICATION_JSON_VALUE)
@@ -33,7 +32,7 @@ public class CompetitionController {
 			@PathVariable Long competitionId
 		) {
 
-		return seervice.convertToDto(seervice.getById(competitionId));
+		return service.convertToDto(service.getById(competitionId));
 	}
 
 	
@@ -42,15 +41,15 @@ public class CompetitionController {
 			@PathVariable Long competitionId
 		) {
 
-		return seervice.getStatistic(competitionId);
+		return service.getStatistic(competitionId);
 	}
 
 	@GetMapping(path = "/competitions/{competitionId}/validate", produces = MediaType.APPLICATION_JSON_VALUE)
-	public ValidationDTO validateCode(
+	public CompetitionDTO validateCode(
 			@PathVariable Long competitionId
 		) {
 
-		return seervice.validateCompetition(competitionId);
+		return service.getDTO(competitionId);
 	}
 
 }

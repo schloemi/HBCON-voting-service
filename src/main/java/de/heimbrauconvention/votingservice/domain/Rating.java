@@ -6,6 +6,13 @@ import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 import javax.validation.constraints.NotNull;
 
+import lombok.Getter;
+import lombok.Setter;
+import lombok.ToString;
+
+@Getter
+@Setter
+@ToString
 @Entity
 @Table(name = "rating")
 public class Rating extends AbstractEntity {
@@ -38,13 +45,5 @@ public class Rating extends AbstractEntity {
 		this.value = (value != null && value > 0.0F )? value : DEFAULT_VALUE;
 	}
 
-	public RatingItem getRatingItem() {
-		return ratingItem;
-	}
-
-	public RatingCode getRatingCode() {
-		return ratingCode;
-	}
-	
 
 }

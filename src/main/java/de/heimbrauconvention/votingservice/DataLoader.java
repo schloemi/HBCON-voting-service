@@ -62,15 +62,15 @@ public class DataLoader implements ApplicationRunner {
         	Competition competition3 = new Competition();
         	competition3.setTitle("Hopfen Queen");
         	competition3.setDescription(""
-        			+ "<h1>Es lebe die Hopfe-Queen</h1>"
-        			+ "<p>Es lebe die Hopfe-Queen</p>");
+        			+ "<h1>Es lebe die Hopfen-Queen</h1>"
+        			+ "<p>Es lebe hoch die Hopfen-Queen, hoch lebe die Hopfen-Queen</p>");
         	competition3.setEmail("schloemi@schloemi.de");
         	competition3.setMaxRatingPerCode(1);
         	competition3.setIsActive(Boolean.FALSE);
         	
         	/**
         	 * 
-        	 * this save is just for easy sequence number
+        	 * this save is just for pretty easy sequence number
         	 * 
         	 */
         	competitionRepository.save(competition1);
@@ -96,7 +96,7 @@ public class DataLoader implements ApplicationRunner {
         	for (int i = 1; i < 23; i++) {
         		RatingItem item = new RatingItem(competition3);
         		item.setTitle("Hopfenqueen Nummer: " + i);
-        		item.setDescription("Hopfenqueen Nummer " + i);
+        		item.setDescription("Hopfen-Queen Nummer " + i);
         		item.setIsActive(Boolean.TRUE);
         		competition3.getRatingItems().add(item);
         	}

@@ -4,23 +4,21 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
-public class StatisticDTO extends AbstractDTO{
+import lombok.Getter;
+import lombok.Setter;
+import lombok.ToString;
 
-	private List<RatingScoreDTO> scores;
+
+@Getter
+@Setter
+@ToString
+public class StatisticDTO extends AbstractDTO {
+
+	private List<RatingScoreDTO> scores = new ArrayList<RatingScoreDTO>();
 	
 	public StatisticDTO() {
+		super();
 		setCreationTime(new Date());
-	}
-	
-	public List<RatingScoreDTO> getScores() {
-		if (scores == null) {
-			scores = new ArrayList<RatingScoreDTO>();
-		}
-		return scores;
-	}
-
-	public void setScores(List<RatingScoreDTO> scores) {
-		this.scores = scores;
 	}
 	
 }

@@ -2,50 +2,30 @@ package de.heimbrauconvention.votingservice.dto;
 
 import java.util.Date;
 
-public class AbstractEntityDTO {
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
+import de.heimbrauconvention.votingservice.domain.AbstractEntity;
+import lombok.Getter;
+import lombok.Setter;
+import lombok.ToString;
+
+
+@Getter
+@Setter
+@ToString
+public abstract class AbstractEntityDTO<T extends AbstractEntity> {
 
 	private String publicId;
-
 	private Date creationTime;
-
 	private Date modificationTime;
-
+	private Boolean isActive = Boolean.TRUE;
 	private ResponseStatus responseStatus;
-
+	
+	@JsonIgnore
+	private T entity;
+	
 	public AbstractEntityDTO() {
-
+		super();
 	}
-
-	public String getPublicId() {
-		return publicId;
-	}
-
-	public void setPublicId(String publicId) {
-		this.publicId = publicId;
-	}
-
-	public Date getCreationTime() {
-		return creationTime;
-	}
-
-	public void setCreationTime(Date creationTime) {
-		this.creationTime = creationTime;
-	}
-
-	public Date getModificationTime() {
-		return modificationTime;
-	}
-
-	public void setModificationTime(Date modificationTime) {
-		this.modificationTime = modificationTime;
-	}
-
-	public ResponseStatus getResponseStatus() {
-		return responseStatus;
-	}
-
-	public void setResponseStatus(ResponseStatus responseStatus) {
-		this.responseStatus = responseStatus;
-	}
-
+	
 }

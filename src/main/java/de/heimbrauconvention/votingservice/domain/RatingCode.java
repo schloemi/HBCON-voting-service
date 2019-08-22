@@ -13,6 +13,13 @@ import javax.persistence.ManyToMany;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
 
+import lombok.Getter;
+import lombok.Setter;
+import lombok.ToString;
+
+@Getter
+@Setter
+@ToString
 @Entity
 @Table(name = "rating_code")
 public class RatingCode extends AbstractEntity {
@@ -39,38 +46,6 @@ public class RatingCode extends AbstractEntity {
 	public RatingCode(Set<Competition> competitions) {
 		this();
 		this.competitions = competitions;
-	}
-
-	public Set<Competition> getCompetitions() {
-		return competitions;
-	}
-
-	public void setCompetitions(Set<Competition> competitions) {
-		this.competitions = competitions;
-	}
-
-	public Set<Rating> getRatings() {
-		return ratings;
-	}
-
-	public void setRatings(Set<Rating> ratings) {
-		this.ratings = ratings;
-	}
-
-	public Boolean getIsActive() {
-		return isActive;
-	}
-
-	public void setIsActive(Boolean isActive) {
-		this.isActive = isActive;
-	}
-
-	public Boolean getPrinted() {
-		return printed;
-	}
-	
-	public void setPrinted(Boolean printed) {
-		this.printed = printed;
 	}
 
 }

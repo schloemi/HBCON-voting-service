@@ -1,37 +1,25 @@
 package de.heimbrauconvention.votingservice.dto;
 
-public class RatingDTO extends AbstractEntityDTO {
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
+import de.heimbrauconvention.votingservice.domain.Rating;
+import lombok.Getter;
+import lombok.Setter;
+import lombok.ToString;
+
+@Getter
+@Setter
+@ToString
+public class RatingDTO extends AbstractEntityDTO<Rating> {
 
 	private RatingCodeDTO ratingCodeDTO;
 	private RatingItemDTO ratingItemDTO;
-	private Integer ratingsLeft;
 
+	@JsonIgnore
+	private CompetitionDTO competitionDTO;
+	
 	public RatingDTO() {
-
-	}
-
-	public RatingCodeDTO getRatingCodeDTO() {
-		return ratingCodeDTO;
-	}
-
-	public void setRatingCodeDTO(RatingCodeDTO ratingCodeDTO) {
-		this.ratingCodeDTO = ratingCodeDTO;
-	}
-
-	public RatingItemDTO getRatingItemDTO() {
-		return ratingItemDTO;
-	}
-
-	public void setRatingItemDTO(RatingItemDTO ratingItemDTO) {
-		this.ratingItemDTO = ratingItemDTO;
-	}
-
-	public Integer getRatingsLeft() {
-		return ratingsLeft;
-	}
-
-	public void setRatingsLeft(Integer ratingsLeft) {
-		this.ratingsLeft = ratingsLeft;
+		super();
 	}
 
 }

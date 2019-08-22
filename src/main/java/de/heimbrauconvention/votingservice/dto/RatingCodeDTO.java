@@ -1,30 +1,22 @@
 package de.heimbrauconvention.votingservice.dto;
 
-public class RatingCodeDTO extends AbstractEntityDTO {
+import java.util.HashSet;
+import java.util.Set;
 
-	private Boolean expired;
-	
-	private Integer ratingsLeft = 0;
+import de.heimbrauconvention.votingservice.domain.RatingCode;
+import lombok.Getter;
+import lombok.Setter;
+import lombok.ToString;
+
+@Getter
+@Setter
+@ToString
+public class RatingCodeDTO extends AbstractEntityDTO<RatingCode> {
+
+	Set<RatingCodeContingentDTO> ratingCodeContingent = new HashSet<>();
 	
 	public RatingCodeDTO() {
-
+		super();
 	}
-
-	public Boolean getExpired() {
-		return expired;
-	}
-
-	public void setExpired(Boolean expired) {
-		this.expired = expired;
-	}
-
-	public Integer getRatingsLeft() {
-		return ratingsLeft;
-	}
-
-	public void setRatingsLeft(Integer ratingsLeft) {
-		this.ratingsLeft = ratingsLeft;
-	}
-
 	
 }
