@@ -1,4 +1,4 @@
-package de.heimbrauconvention.votingservice.controller;
+package de.heimbrauconvention.votingservice.controller.frontend;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -7,6 +7,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
 import org.springframework.util.CollectionUtils;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -36,16 +37,38 @@ public class AdminController {
 	@Autowired
 	private RatingService ratingService;
 	
+	@GetMapping("/")
+    public String home() {
+        return "redirect:/admin/dashboard";
+    }
+	
+	
+	@GetMapping("/login")
+    public String login() {
+        return "/admin/login";
+    }
+	
+	@GetMapping("/dashboard")
+    public String logout() {
+        return "/admin/dashboard";
+    }
+	
+	
+	@GetMapping("/error/403")
+    public String error403() {
+        return "/admin/error/403";
+    }
+
 	
 	@RequestMapping(value="/competitions/{competitionId}/ratingItems", method = RequestMethod.GET)
 	public String index(
 			ModelMap modelMap,
-			@PathVariable("competitionId") Long competitionId
+			@PathVariable("competitionId") String competitionId
 		) {
 		
-		Competition competition = competitionService.getById(competitionId);
+		Competition competition = competitionService.getByPublicId(competitionId);
 		if (competition == null) {
-			return "error";
+			return "/admin/error/404";
 		}
 		modelMap.put("competition", competition);
 		return "admin/rating-items";
@@ -55,13 +78,13 @@ public class AdminController {
 	@RequestMapping(value = "/competitions/{competitionId}/addRatings/{number}", method = RequestMethod.GET)
 	public String addRatings(
 			ModelMap modelMap,
-			@PathVariable("competitionId") Long competitionId,
+			@PathVariable("competitionId") String competitionId,
 			@PathVariable("number") Integer number 
 		) {
 		
-		Competition competition = competitionService.getById(competitionId);
+		Competition competition = competitionService.getByPublicId(competitionId);
 		if (competition == null) {
-			return "error";
+			return "/admin/error/404";
 		}
 
 		List<RatingDTO> ratings = new ArrayList<>();

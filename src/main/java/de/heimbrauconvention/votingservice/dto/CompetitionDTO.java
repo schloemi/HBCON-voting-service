@@ -20,6 +20,7 @@ public class CompetitionDTO extends AbstractEntityDTO<Competition> {
 	private String email;
 	private Date startDate;
 	private Date endDate;
+	private String icon;
 
 	public CompetitionDTO() {
 		super();

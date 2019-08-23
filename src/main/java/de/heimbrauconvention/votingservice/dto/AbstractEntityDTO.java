@@ -13,13 +13,11 @@ import lombok.ToString;
 @Getter
 @Setter
 @ToString
-public abstract class AbstractEntityDTO<T extends AbstractEntity> {
+public abstract class AbstractEntityDTO<T extends AbstractEntity> extends AbstractDTO {
 
 	private String publicId;
-	private Date creationTime;
 	private Date modificationTime;
 	private Boolean isActive = Boolean.TRUE;
-	private ResponseStatus responseStatus;
 	
 	@JsonIgnore
 	private T entity;

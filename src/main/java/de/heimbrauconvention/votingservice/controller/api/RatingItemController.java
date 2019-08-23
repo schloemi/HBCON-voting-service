@@ -2,6 +2,7 @@ package de.heimbrauconvention.votingservice.controller.api;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
+import org.springframework.util.StopWatch;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -23,7 +24,13 @@ public class RatingItemController{
 			@PathVariable String publicId
 		) {
 
-		return service.getDTO(publicId, Boolean.TRUE);
+		StopWatch watch = new StopWatch();
+		watch.start();
+		RatingItemDTO dto = service.getDTO(publicId, Boolean.TRUE);
+		watch.stop();
+		dto.setProcessingTime(watch.getTotalTimeMillis());
+		
+		return dto;
 	}
 	
 	@GetMapping(path = "/ratingitems/{publicId}/validate", produces = MediaType.APPLICATION_JSON_VALUE)
@@ -31,6 +38,12 @@ public class RatingItemController{
 			@PathVariable String publicId
 			) {
 		
-		return service.getDTO(publicId);
+		StopWatch watch = new StopWatch();
+		watch.start();
+		RatingItemDTO dto =  service.getDTO(publicId);
+		watch.stop();
+		dto.setProcessingTime(watch.getTotalTimeMillis());
+		
+		return dto;
 	}
 }

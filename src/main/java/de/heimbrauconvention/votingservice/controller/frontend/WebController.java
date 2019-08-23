@@ -1,4 +1,4 @@
-package de.heimbrauconvention.votingservice.controller;
+package de.heimbrauconvention.votingservice.controller.frontend;
 
 import java.io.OutputStream;
 
@@ -23,26 +23,34 @@ public class WebController {
 	@Autowired
 	CompetitionService competitionService;
 	
+
+	@RequestMapping("/")
+	public String homePage() {
+		return "redirect:/web/dashboard";
+	}
+
+	@RequestMapping("/dashboard")
+	public String dashboard() {
+		return "/web/dashboard";
+	}
+			
+			
 	
 	@RequestMapping("/competitions/{competitionId}")
-    public String homePage(
+	public String competitions(
     		HttpServletRequest request,
 			HttpServletResponse response,
 			Model model,
-    		@PathVariable Long competitionId) {
+    		@PathVariable String competitionId) {
 		
-		Competition competition = competitionService.getById(competitionId);
+		Competition competition = competitionService.getByPublicId(competitionId);
 		if (competition == null) {
 			return "error";
 		}
 		model.addAttribute("competition", competitionService.convertToDto(competition));
-		return "competition";
-    }
+		return "/web/competition";
+	}
 
-	/*********************************************************
-	 * 
-	 * Utils ENDPOINTS
-	 */
 	
 	@RequestMapping(value = "/utils/qrcode/{anyString}", method = RequestMethod.GET)
 	public void qrcode(

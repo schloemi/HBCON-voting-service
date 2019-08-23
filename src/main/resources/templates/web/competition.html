@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html 	xmlns:th="http://www.thymeleaf.org"
+		xmlns="http://www.w3.org/1999/html">
+
+	<head>
+	<title th:text="${competition.title}">competition.title</title>
+		<div th:replace="fragments/header :: header-meta" />
+		<div th:replace="fragments/header :: header-css" />
+		<script src="https://cdn.jsdelivr.net/npm/chart.js@2.8.0"></script>
+	</head>
+<body>
+	<div th:replace="fragments/header :: nav" />
+
+	<main role="main" class="container">
+		<div class="row">
+			<div class="col-sm">
+				<h4 class="text-center mt-3">High Scores</h4>
+				<canvas id="mycanvas" height="300"></canvas>
+			</div>
+			<div class="col-sm text-center">
+				<h4 class="text-center mt-3">Total Ratings</h4>
+				<h1><span id="totalRatings" class="badge badge-info" style="width:50%">0</span></h1>
+			
+				<h4 class="text-center mt-3">Unique User</h4>
+				<h1><span id="uniqueUser" class="badge badge-info" style="width:50%">0</span></h1>
+			</div>
+		</div>
+	</main>
+	
+	<script type="text/javascript">
+	
+		/*<![CDATA[*/
+	    var COMPETITION_PUBLIC_ID = "[[${competition.publicId}]]";
+	  
+		$(document).ready(function() {
+			web_competitions_keyfigures(COMPETITION_PUBLIC_ID);
+			web_competitions_statistic(COMPETITION_PUBLIC_ID);
+			
+			
+			setInterval(function () {
+				web_competitions_keyfigures(COMPETITION_PUBLIC_ID);
+				web_competitions_statistic(COMPETITION_PUBLIC_ID);
+		    },23400);
+			
+		});
+		
+		 /*]]>*/
+		 
+	</script>
+</body>
+</html>

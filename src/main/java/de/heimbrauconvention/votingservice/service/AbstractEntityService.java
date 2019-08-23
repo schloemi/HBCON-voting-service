@@ -39,7 +39,7 @@ public abstract class AbstractEntityService<T extends AbstractEntity, S extends 
 	public T getById(final Long id) {
 		return getRepsoitory().findById(id).orElse(null);
 	}
-
+	
 	public Iterable<T> getAll() {
 		return getRepsoitory().findAll();
 	}

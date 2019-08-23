@@ -1,15 +1,16 @@
 package de.heimbrauconvention.votingservice.controller.api;
 
-import java.util.List;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
+import org.springframework.util.StopWatch;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import de.heimbrauconvention.votingservice.dto.CompetitionDTO;
+import de.heimbrauconvention.votingservice.dto.CompetitionListDTO;
+import de.heimbrauconvention.votingservice.dto.KeyFiguresDTO;
 import de.heimbrauconvention.votingservice.dto.StatisticDTO;
 import de.heimbrauconvention.votingservice.service.CompetitionService;
 
@@ -22,34 +23,59 @@ public class CompetitionController {
 
 	
 	@GetMapping(path = "/competitions", produces = MediaType.APPLICATION_JSON_VALUE)
-	public List<CompetitionDTO> listCompetition() {
+	public CompetitionListDTO listCompetition() {
 		
-		return service.getAllActiveCompetitions();
+		StopWatch watch = new StopWatch();
+		watch.start();
+		CompetitionListDTO dto = service.getAllActiveCompetitions();
+		watch.stop();
+		dto.setProcessingTime(watch.getTotalTimeMillis());
+		
+		return dto;
 	}
 
-	@GetMapping(path = "/competitions/{competitionId}", produces = MediaType.APPLICATION_JSON_VALUE)
+	@GetMapping(path = "/competitions/{publicId}", produces = MediaType.APPLICATION_JSON_VALUE)
 	public CompetitionDTO getCompetition (
-			@PathVariable Long competitionId
+			@PathVariable String publicId
 		) {
 
-		return service.convertToDto(service.getById(competitionId));
+		StopWatch watch = new StopWatch();
+		watch.start();
+		CompetitionDTO dto = service.getDTO(publicId);
+		watch.stop();
+		dto.setProcessingTime(watch.getTotalTimeMillis());
+		
+		return dto;
 	}
 
 	
-	@GetMapping(path = "/competitions/{competitionId}/statistic", produces = MediaType.APPLICATION_JSON_VALUE)
-	public StatisticDTO statistic(
-			@PathVariable Long competitionId
+	@GetMapping(path = "/competitions/{publicId}/statistic", produces = MediaType.APPLICATION_JSON_VALUE)
+	public StatisticDTO getStatistic(
+			@PathVariable String publicId
 		) {
 
-		return service.getStatistic(competitionId);
+		StopWatch watch = new StopWatch();
+		watch.start();
+		StatisticDTO dto = service.getStatistic(publicId);
+		watch.stop();
+		dto.setProcessingTime(watch.getTotalTimeMillis());
+		
+		return dto;
 	}
-
-	@GetMapping(path = "/competitions/{competitionId}/validate", produces = MediaType.APPLICATION_JSON_VALUE)
-	public CompetitionDTO validateCode(
-			@PathVariable Long competitionId
+	
+	@GetMapping(path = "/competitions/{publicId}/key-figures", produces = MediaType.APPLICATION_JSON_VALUE)
+	public KeyFiguresDTO getKeyFigures(
+			@PathVariable String publicId
 		) {
 
-		return service.getDTO(competitionId);
+		StopWatch watch = new StopWatch();
+		watch.start();
+		KeyFiguresDTO dto = service.getKeyFigures(publicId);
+		watch.stop();
+		dto.setProcessingTime(watch.getTotalTimeMillis());
+		
+		return dto;
 	}
+	
 
 }

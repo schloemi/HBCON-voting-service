@@ -57,7 +57,7 @@ public class RatingService extends AbstractEntityService<Rating, RatingDTO, Crud
 			return dto;
 		}
 		
-		CompetitionDTO competitionDTO = competitionService.getDTO(ratingItemDTO.getCompetitionDTO().getId());
+		CompetitionDTO competitionDTO = competitionService.getDTO(ratingItemDTO.getCompetitionDTO().getPublicId());
 		dto.setCompetitionDTO(competitionDTO);
 		if (!ResponseStatus.OK.equals(competitionDTO.getResponseStatus())) {
 			dto.setResponseStatus(competitionDTO.getResponseStatus());

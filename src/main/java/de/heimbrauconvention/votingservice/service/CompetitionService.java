@@ -14,10 +14,13 @@ import org.springframework.util.StringUtils;
 
 import de.heimbrauconvention.votingservice.domain.Competition;
 import de.heimbrauconvention.votingservice.dto.CompetitionDTO;
+import de.heimbrauconvention.votingservice.dto.CompetitionListDTO;
+import de.heimbrauconvention.votingservice.dto.KeyFiguresDTO;
 import de.heimbrauconvention.votingservice.dto.RatingScoreDTO;
 import de.heimbrauconvention.votingservice.dto.ResponseStatus;
 import de.heimbrauconvention.votingservice.dto.StatisticDTO;
 import de.heimbrauconvention.votingservice.dto.ValidationDTO;
+import de.heimbrauconvention.votingservice.repository.CompetitionRepository;
 import de.heimbrauconvention.votingservice.repository.RatingCodeRepository;
 import de.heimbrauconvention.votingservice.repository.RatingItemRepository;
 import de.heimbrauconvention.votingservice.repository.RatingRepository;
@@ -26,6 +29,10 @@ import de.heimbrauconvention.votingservice.repository.RatingRepository;
 @Service
 public class CompetitionService extends AbstractEntityService<Competition, CompetitionDTO, CrudRepository<Competition,Long>>{
 
+	
+	@Autowired
+	CompetitionRepository repository;
+	
 	@Autowired
 	RatingCodeRepository ratingCodeRepository;
 	
@@ -34,6 +41,7 @@ public class CompetitionService extends AbstractEntityService<Competition, Compe
 	
 	@Autowired
 	RatingRepository ratingRepository;
+	
 	
 	
 	@Override
@@ -48,24 +56,36 @@ public class CompetitionService extends AbstractEntityService<Competition, Compe
 		return dto;
 	}
 	
-	public List<CompetitionDTO> getAllActiveCompetitions() {
-		return this.getAllAsList()
-			.stream()
-			.filter(c -> c.getIsActive())
-			.map(c -> convertToDto(c))
-			.collect(Collectors.toList());
+	public Competition getByPublicId(final String publicId) {
+		return repository.findByPublicId(publicId).orElse(null);
 	}
 
-	public StatisticDTO getStatistic(Long competitionId) {
+	
+	public CompetitionListDTO getAllActiveCompetitions() {
+		
+		CompetitionListDTO dto = new CompetitionListDTO();
+		
+		List<CompetitionDTO> competitionDTOs = this.getAllAsList()
+				.stream()
+				.filter(c -> c.getIsActive())
+				.map(c -> convertToDto(c))
+				.collect(Collectors.toList());
+		
+		dto.setCompetitions(competitionDTOs);
+		dto.setResponseStatus(ResponseStatus.OK);
+		return dto;
+	}
+
+	public StatisticDTO getStatistic(String competitionId) {
 		StatisticDTO dto = new StatisticDTO();
 		
-		Competition competition = this.getById(competitionId);
+		Competition competition = this.getByPublicId(competitionId);
 		if (competition == null) {
 			dto.setResponseStatus(ResponseStatus.ERROR_NOT_FOUND_COMPETITION);
 			return dto;
 		}
 		
-		List<Object[]> statistics = ratingRepository.statistics(competitionId);
+		List<Object[]> statistics = ratingRepository.statistics(competition.getId());
 		if (!CollectionUtils.isEmpty(statistics)) {
 			for (Object[] objects : statistics) {
 				if (objects[0] == null) {
@@ -82,8 +102,22 @@ public class CompetitionService extends AbstractEntityService<Competition, Compe
 		return dto;
 	}
 	
+	public KeyFiguresDTO getKeyFigures(String publicId) {
+		KeyFiguresDTO dto = new KeyFiguresDTO();
+		
+		Competition competition = this.getByPublicId(publicId);
+		if (competition == null) {
+			dto.setResponseStatus(ResponseStatus.ERROR_NOT_FOUND_COMPETITION);
+			return dto;
+		}
+		dto.setTotalRatings(ratingRepository.countByRatingItemCompetitionId(competition.getId()));
+		dto.setUniqueUser(ratingRepository.getUniqueRatingCodes4Competition(competition.getId()));
+		dto.setResponseStatus(ResponseStatus.OK);
+		return dto;
+	}
 	
-	public ValidationDTO<Competition> validate(Long competitionId, ValidationDTO<Competition> dto, boolean checkTimeFrame) {
+	
+	public ValidationDTO<Competition> validate(String competitionId, ValidationDTO<Competition> dto, boolean checkTimeFrame) {
 		
 		dto.setResponseStatus(ResponseStatus.OK);
 		
@@ -92,7 +126,7 @@ public class CompetitionService extends AbstractEntityService<Competition, Compe
 			return dto;
 		}
 		
-		Competition competition = this.getById(competitionId);
+		Competition competition = this.getByPublicId(competitionId);
 		dto.setEntity(competition);
 		if (competition == null) {
 			dto.setResponseStatus(ResponseStatus.ERROR_NOT_FOUND_COMPETITION);
@@ -117,7 +151,7 @@ public class CompetitionService extends AbstractEntityService<Competition, Compe
 	}
 	
 	
-	public CompetitionDTO getDTO(Long competitionId) {
+	public CompetitionDTO getDTO(String competitionId) {
 		CompetitionDTO dto = new CompetitionDTO();
 		ValidationDTO<Competition> validationDTO = new ValidationDTO<>();
 		validate(competitionId, validationDTO, false);
@@ -132,6 +166,8 @@ public class CompetitionService extends AbstractEntityService<Competition, Compe
 		dto.setResponseStatus(ResponseStatus.OK);
 		return dto;
 	}
+
+	
 	
 
 }

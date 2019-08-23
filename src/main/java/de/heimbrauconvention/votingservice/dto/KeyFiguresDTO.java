@@ -6,17 +6,19 @@ import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
 
+
 @Getter
 @Setter
 @ToString
-public abstract class AbstractDTO {
+public class KeyFiguresDTO extends AbstractDTO {
 
-	private Long processingTime;
-	private Date creationTime;
-	private ResponseStatus responseStatus;
-
-	public AbstractDTO() {
+	private Long totalRatings = 0L;
+	
+	private Long uniqueUser = 0L;
+	
+	public KeyFiguresDTO() {
 		super();
+		setCreationTime(new Date());
 	}
 	
 }

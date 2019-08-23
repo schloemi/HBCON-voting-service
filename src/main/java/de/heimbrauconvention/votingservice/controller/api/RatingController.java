@@ -2,6 +2,7 @@ package de.heimbrauconvention.votingservice.controller.api;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
+import org.springframework.util.StopWatch;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -16,13 +17,9 @@ public class RatingController {
 
 	
 	@Autowired
-	RatingService ratingService;
+	RatingService service;
 	
-	/*********************************************************
-	 * 
-	 * RATING ENDPOINTS
-	 */
-
+	
 	// TODO: Make this a POST-Mapping
 	@GetMapping(path = "/rating/code/{codeId}/item/{itemId}", produces = MediaType.APPLICATION_JSON_VALUE)
 	public RatingDTO rate(
@@ -30,7 +27,14 @@ public class RatingController {
 			@PathVariable String itemId
 		) {
 
-		return ratingService.rate(codeId, itemId, 1.0F);
+		StopWatch watch = new StopWatch();
+		watch.start();
+		RatingDTO dto = service.rate(codeId, itemId, 1.0F);
+		watch.stop();
+		dto.setProcessingTime(watch.getTotalTimeMillis());
+		
+		return dto;
+	
 	}
 
 	
@@ -42,7 +46,14 @@ public class RatingController {
 			@PathVariable String itemId,
 			@PathVariable Float value) {
 
-		return ratingService.rate(codeId, itemId, value);
+		StopWatch watch = new StopWatch();
+		watch.start();
+		RatingDTO dto = service.rate(codeId, itemId, value);
+		watch.stop();
+		dto.setProcessingTime(watch.getTotalTimeMillis());
+		
+		return dto;
+		
 	}
 	
 

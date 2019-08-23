@@ -28,9 +28,11 @@ import lombok.ToString;
 @Table(name = "competition")
 public class Competition extends AbstractEntity {
 
-	public static final Float 	MAX_RATING_SCORE = 1.0F;
-	public static final Integer MAX_RATING_PER_CODE = 5;
+	public static final Float		MAX_RATING_SCORE = 1.0F;
+	public static final Integer 	MAX_RATING_PER_CODE = 5;
 	
+	@Column(length = 255)
+	private String icon;
 
 	@Temporal(value = TemporalType.TIMESTAMP)
 	@Column(name = "start_date")

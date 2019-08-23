@@ -2,19 +2,15 @@
 <html xmlns:th="http://www.thymeleaf.org" xmlns="http://www.w3.org/1999/html">
 
 <head>
-<title th:text="${'RatingItems für:' + competition.title}">competition.title</title>
-<meta charset="utf-8" />
-<meta name="viewport" content="width=device-width, initial-scale=1" />
-<link rel="stylesheet"
-	href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" />
-<script
-	src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
-<script
-	src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js"></script>
-<script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js"></script>
+	<title th:text="${'RatingItems für:' + competition.title}">competition.title</title>
+	<div th:replace="fragments/header :: header-meta" />
+	<div th:replace="fragments/header :: header-css" />
 </head>
 <body>
-	<div class="container">
+	
+	<div th:replace="fragments/header :: nav" />
+	
+	<main role="main" class="container">
 		<nav class="navbar navbar-light bg-light">
 			<span class="navbar-brand mb-0 h1" th:text="${'RatingItems für: ' + competition.title + ' (' + #lists.size(competition.ratingItems) +')'}">${competition.title}</span>
 		</nav>
@@ -42,6 +38,6 @@
 				</table>
 			</div>
 		</div>
-	</div>
+	</main>
 </body>
 </html>

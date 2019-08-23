@@ -18,13 +18,23 @@ public interface RatingRepository extends CrudRepository<Rating, Long> {
 	
 	List<Rating> findByRatingCodeAndRatingItem(RatingCode ratingCode, RatingItem ratingItem);
 	
+	Long countByRatingItemCompetitionId(Long competitionId);
+	
+	@Query(value = 	"SELECT COUNT(DISTINCT r.rating_code_id) " + 
+					"FROM rating r " + 
+					"JOIN rating_item item ON item.id = r.rating_item_id " + 
+					"WHERE item.competition_id = ?1 ;"
+					, nativeQuery = true)
+	Long getUniqueRatingCodes4Competition(Long competitionId);
+	
+	
 	@Query(value = "SELECT ri.public_id, score.amount, ri.title from rating_item ri " + 
 			"		LEFT JOIN (" + 
 			"			SELECT rating_item_id, SUM(value) as amount" + 
 			"			FROM rating            " + 
 			"			GROUP BY rating_item_id) score On score.rating_item_id = ri.id" + 
 			"		WHERE competition_id = ?1 and ri.is_active = 1" + 
-			"   	ORDER BY score.amount DESC;"
+			"   	ORDER BY score.amount DESC ;"
 			, nativeQuery = true)
 	List<Object[]> statistics(long competitionId);
 	
@@ -35,7 +45,7 @@ public interface RatingRepository extends CrudRepository<Rating, Long> {
 			"			GROUP BY rating_item_id) score On score.rating_item_id = ri.id" + 
 			"		WHERE competition_id = ?1 AND " + 
 			"       rating_item_id = ?2 AND " +
-			"       ri.is_active = 1;"
+			"       ri.is_active = 1 ;"
 			, nativeQuery = true)
 	List<Object[]> statistics(long competitionId, long ratingItemId);
 	
@@ -54,7 +64,7 @@ public interface RatingRepository extends CrudRepository<Rating, Long> {
 			"			WHERE r.rating_code_id = ?1 " + 
 			"			GROUP BY rc.id, comp.id) innerJoin ON c.id = innerJoin.competition_id " + 
 			"		WHERE c.is_active <> 0 " + 
-			"       AND   c.id IN (SELECT competition_id FROM rating_code_2_competition WHERE rating_code_id = ?1)"
+			"       AND   c.id IN (SELECT competition_id FROM rating_code_2_competition WHERE rating_code_id = ?1 ) ;"
 			, nativeQuery = true)
 	List<Object[]> getCompetitionRatingsForRatingCode(long ratingCodeId);
 
