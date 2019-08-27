@@ -1,7 +1,9 @@
 package de.heimbrauconvention.votingservice.dto;
 
-import java.util.HashSet;
-import java.util.Set;
+import java.util.ArrayList;
+import java.util.List;
+
+import javax.persistence.OrderBy;
 
 import de.heimbrauconvention.votingservice.domain.RatingCode;
 import lombok.Getter;
@@ -13,7 +15,8 @@ import lombok.ToString;
 @ToString
 public class RatingCodeDTO extends AbstractEntityDTO<RatingCode> {
 
-	Set<RatingCodeContingentDTO> ratingCodeContingent = new HashSet<>();
+	@OrderBy("competitionDTO.startDate")
+	List<RatingCodeContingentDTO> ratingCodeContingent = new ArrayList<>();
 	
 	public RatingCodeDTO() {
 		super();

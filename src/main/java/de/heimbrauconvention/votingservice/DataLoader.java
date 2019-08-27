@@ -1,6 +1,7 @@
 package de.heimbrauconvention.votingservice;
 
 import java.util.Calendar;
+import java.util.GregorianCalendar;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -44,20 +45,37 @@ public class DataLoader implements ApplicationRunner {
         	competition1.setTitle("HB-CON Publikumspreis");
         	competition1.setDescription(""
         			+ "<h1>Alljährlicher Publikumspreis der Hobbybrauconvention 2020</h1>"
-        			+ "<p>Auch in diesem präsentieren ambitionierte Hobbybrauer ihre Biere der Öffentlichkeit und stellen sich dem Wettbewerb um die begehrten Trophehen, Ruhm und Ehre.</p>");
+        			+ "<p>Auch in diesem Jahr präsentieren ambitionierte Hobbybrauer ihre Biere der Öffentlichkeit und stellen sich dem Wettbewerb um die begehrten Trophehen, Ruhm und Ehre.</p>");
         	competition1.setEmail("schloemi@schloemi.de");
-        	competition1.setStartDate(Calendar.getInstance().getTime());
+        	
+        	
+        	        	
+        	/**
+        	 * 
+        	 * update competition set start_date = '2020-03-14 17:00:00' where id = 1;
+        	 * update competition set end_date = '2020-03-14 19:00:00' where id = 1;
+        	 */
+            competition1.setStartDate(new GregorianCalendar(2020, Calendar.MARCH, 14, 17, 00, 00).getTime());
+        	competition1.setEndDate(new GregorianCalendar(2020, Calendar.MARCH, 14, 19, 00, 00).getTime());
+        	competition1.setLocation("Schloss Romrod");
+        	
+        	
         	competition1.setIsActive(Boolean.TRUE);
         	
         	Competition competition2 = new Competition();
         	competition2.setTitle("Poster Session");
         	competition2.setDescription(""
         			+ "<h1>Neu auf der HB-COM 2020</h1>"
-        			+ "<p>Erstmalig in diesem Jahr startet der erbitterte Kampf um die goldene Krone .. s sj s </p>");
+        			+ "<p>Erstmalig startet in diesem Jahr der erbitterte Kampf um die goldene Krone des Poster-Master </p>");
         	competition2.setEmail("schloemi@schloemi.de");
         	competition2.setMaxRatingPerCode(2);
         	competition2.setStartDate(Calendar.getInstance().getTime());
         	competition2.setIsActive(Boolean.TRUE);
+        	competition2.setStartDate(new GregorianCalendar(2020, Calendar.MARCH, 13, 17, 30, 00).getTime());
+         	competition2.setEndDate(new GregorianCalendar(2020, Calendar.MARCH, 13, 19, 30, 00).getTime());
+         	competition2.setLocation("Schloss Romrod");
+        	
+        	
         	
         	Competition competition3 = new Competition();
         	competition3.setTitle("Hopfen Queen");
@@ -66,7 +84,11 @@ public class DataLoader implements ApplicationRunner {
         			+ "<p>Es lebe hoch die Hopfen-Queen, hoch lebe die Hopfen-Queen</p>");
         	competition3.setEmail("schloemi@schloemi.de");
         	competition3.setMaxRatingPerCode(1);
-        	competition3.setIsActive(Boolean.FALSE);
+        	competition3.setIsActive(Boolean.TRUE);
+        	competition3.setStartDate(new GregorianCalendar(2020, Calendar.MARCH, 13, 20, 15, 00).getTime());
+         	competition3.setEndDate(new GregorianCalendar(2020, Calendar.MARCH, 13, 22, 15, 00).getTime());
+         	competition3.setLocation("Bürgerhaus Romrod");
+        	
         	
         	/**
         	 * 

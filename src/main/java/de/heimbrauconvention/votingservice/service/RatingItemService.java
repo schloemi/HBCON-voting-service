@@ -1,5 +1,6 @@
 package de.heimbrauconvention.votingservice.service;
 
+import java.math.BigInteger;
 import java.util.List;
 
 import javax.transaction.Transactional;
@@ -73,11 +74,26 @@ public class RatingItemService extends AbstractEntityService<RatingItem, RatingI
 		dto.setEntity(validationDTO.getEntity());
 		dto.setCompetitionDTO(competitionService.convertToDto(dto.getEntity().getCompetition()));
 		if (withwScore) {
+			dto.setScore(0);
+			dto.setRank(9999);
+			
 			List<Object[]> statistics = ratingRepository.statistics(dto.getEntity().getCompetition().getId(), dto.getEntity().getId());
 			if (!CollectionUtils.isEmpty(statistics)) {
 				Object[] obj = statistics.get(0);
 				if (obj[1] != null) {
 					dto.setScore(((Double) obj[1]).intValue());
+				}
+			}
+			
+			List<Object[]> ratingItemRank = ratingRepository.ratingItemRank(dto.getEntity().getCompetition().getId(), dto.getEntity().getId());
+			if (!CollectionUtils.isEmpty(ratingItemRank)) {
+				Object[] obj = ratingItemRank.get(0);
+				if (obj[0] != null) {
+					try {
+						dto.setRank(((BigInteger)obj[0]).intValue());
+					} catch (Exception e) {
+						e.printStackTrace();
+					}
 				}
 			}
 		}

@@ -11,17 +11,17 @@ public class RatingCodeContingentDTO {
 
 	CompetitionDTO competitionDTO;
 	Integer ratings;
-	Integer ratinngsLeft;
+	Integer ratingsLeft;
 	
 	public RatingCodeContingentDTO() {
 		super();
 	}
 
-	public RatingCodeContingentDTO(CompetitionDTO competitionDTO, Integer ratings, Integer ratinngsLeft) {
+	public RatingCodeContingentDTO(CompetitionDTO competitionDTO, Integer ratings, Integer ratingsLeft) {
 		super();
 		this.competitionDTO = competitionDTO;
 		this.ratings = ratings;
-		this.ratinngsLeft = ratinngsLeft;
+		this.ratingsLeft = ratingsLeft;
 	}
 	
 }

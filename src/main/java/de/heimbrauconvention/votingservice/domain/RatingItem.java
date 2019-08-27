@@ -34,6 +34,9 @@ public class RatingItem extends AbstractEntity {
 
 	@Column(length = 255)
 	private String email;
+	
+	@Column(length = 255)
+	private String composer;
 
 	@Column(name = "is_active")
 	private Boolean isActive = Boolean.FALSE;

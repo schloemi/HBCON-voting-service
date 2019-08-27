@@ -12,11 +12,14 @@ public class RatingItemDTO extends AbstractEntityDTO<RatingItem> {
 
 	private String title;
 	private String description;
+	private String composer;
 	private String url;
 	private String email;
 	private Boolean isActive;
+	private Integer rank;
 	private Integer score;
 	private CompetitionDTO competitionDTO;
+	
 	
 	public RatingItemDTO() {
 		super();

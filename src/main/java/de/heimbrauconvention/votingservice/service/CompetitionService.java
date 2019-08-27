@@ -1,5 +1,6 @@
 package de.heimbrauconvention.votingservice.service;
 
+import java.util.Comparator;
 import java.util.Date;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -68,6 +69,7 @@ public class CompetitionService extends AbstractEntityService<Competition, Compe
 		List<CompetitionDTO> competitionDTOs = this.getAllAsList()
 				.stream()
 				.filter(c -> c.getIsActive())
+				.sorted(Comparator.comparing(Competition::getStartDate, Comparator.nullsLast(Comparator.reverseOrder())))
 				.map(c -> convertToDto(c))
 				.collect(Collectors.toList());
 		

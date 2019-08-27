@@ -34,12 +34,15 @@ public class Competition extends AbstractEntity {
 	@Column(length = 255)
 	private String icon;
 
+	@Column(length = 255)
+	private String location;
+	
 	@Temporal(value = TemporalType.TIMESTAMP)
 	@Column(name = "start_date")
 	private Date startDate;
 
 	@Temporal(value = TemporalType.TIMESTAMP)
-	@Column(name = "end_dare")
+	@Column(name = "end_date")
 	private Date endDate;
 
 	@Column(length = 255)
@@ -65,6 +68,9 @@ public class Competition extends AbstractEntity {
 
 	@Column(name = "max_rating_per_code")
 	private Integer maxRatingPerCode = MAX_RATING_PER_CODE;
+	
+	@Column(name = "rating_strategie")
+	private RatingStrategie ratingStrategie = RatingStrategie.DIRECT;
 
 	@OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
 	@JoinColumn(name = "competition_id")
